@@ -1,0 +1,53 @@
+# Base values for Airflow Helm chart
+# Shared across all environments (dev, staging, prod)
+#
+# Docs: https://airflow.apache.org/docs/helm-chart/stable/parameters-ref.html
+
+# Use microk8s-hostpath for all persistence
+defaultStorageClass: microk8s-hostpath
+
+# Persistence settings for all components
+postgresql:
+  persistence:
+    storageClass: microk8s-hostpath
+
+redis:
+  persistence:
+    storageClassName: microk8s-hostpath
+
+logs:
+  persistence:
+    enabled: true
+    storageClassName: microk8s-hostpath
+
+# CeleryExecutor (default) - workers can be scaled by KEDA
+executor: "CeleryExecutor"
+
+# Enable KEDA autoscaling for Celery workers
+# KEDA will scale workers based on queued/running task count
+workers:
+  keda:
+    enabled: true
+    minReplicaCount: 0   # scale to zero when idle
+    maxReplicaCount: 10
+
+# Expose API server for access (Airflow 3 – NodePort works with MicroK8s)
+apiServer:
+  service:
+    type: NodePort
+  extraVolumes:
+    - name: dags
+      persistentVolumeClaim:
+        claimName: airflow-dags
+  extraVolumeMounts:
+    - name: dags
+      mountPath: /opt/airflow/dags
+      readOnly: true
+
+# Use a PersistentVolume for DAGs to avoid ConfigMap symlink issues
+dags:
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClassName: microk8s-hostpath
+    accessMode: ReadWriteOnce

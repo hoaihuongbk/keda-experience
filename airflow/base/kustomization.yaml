@@ -1,0 +1,10 @@
+# Base Kustomization - shared Airflow configuration
+# Overlays (dev, staging, prod) inherit from this base
+#
+# Helm values are in values.yaml; merge with overlay values via:
+#   helm upgrade -f base/values.yaml -f overlays/<env>/values.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml

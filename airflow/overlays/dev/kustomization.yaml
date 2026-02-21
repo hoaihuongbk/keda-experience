@@ -1,0 +1,10 @@
+# Dev overlay - local MicroK8s / development cluster
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: airflow
+
+resources:
+  - ../../base
+
+# Helm values: base/values.yaml + overlays/dev/values.yaml merged via Makefile

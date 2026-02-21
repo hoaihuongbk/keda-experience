@@ -1,0 +1,31 @@
+# Dev overlay - environment-specific overrides
+# Merged with base/values.yaml (this file wins on conflicts)
+#
+# Add dev-only settings: lower resources, debug, local storage, etc.
+
+# Worker resources for dev (prevents OOMKilled)
+workers:
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "1Gi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+
+# Top-level config for Airflow settings
+config:
+  celery:
+    worker_concurrency: 2
+
+# Add any dev-only overrides here
+# e.g. lower resource requests/limits for local MicroK8s
+
+# Ingress for Airflow 3 apiServer
+ingress:
+  apiServer:
+    enabled: true
+    hosts:
+      - name: "airflow.microk8s.local"
+    path: "/"
+    ingressClassName: "public"

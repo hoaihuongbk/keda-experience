@@ -1,0 +1,2 @@
+# Ignore Kubernetes ConfigMap/Secret mount metadata directories
+\.\..*
